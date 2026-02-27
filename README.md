@@ -1,6 +1,6 @@
 # Arrow Stick (OpenMW)
 
-Makes arrows stick into terrain and objects.
+Makes arrows stick into terrain and objects. NOT actors.
 
 Fixed version of [ArrowStick](https://gitlab.com/daisyhasacat/modathon2024/-/tree/main/ArrowStick?ref_type=heads) by DaisyHasACat.
 
