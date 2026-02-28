@@ -46,12 +46,11 @@ local function getObjInCrosshairs(ignoredObj, mdist, alwaysPost, sourcePos)
     local dist = 8500
     if (mdist ~= nil) then dist = mdist end
 
-    -- local ret = nearby.castRenderingRay(pos, pos + v * dist, { ignore = ignoredObj })
+    local ret = nearby.castRenderingRay(pos, pos + v * dist, { ignore = ignoredObj })
     local ret2 = nearby.castRay(pos, pos + v * dist, { ignore = ignoredObj })
     local destPos = (pos + v * dist)
 
-    -- return ret, ret2, destPos
-    return ret2, destPos
+    return ret, ret2, destPos
 end
 
 local function createRotation(x, y, z)
@@ -68,38 +67,31 @@ local function createRotation(x, y, z)
     end
 end
 
-local function placeNewArrow(cast)
-    if not cast.hitPos then return end
-
+local function placeNewArrow()
     local xRot = camera.getPitch() - math.rad(rotOffset)
     local zRot = getRotation(self.rotation).z -- math.rad(rotOffset2)
-    local cast2 = getObjInCrosshairs(self, nil, false, nil)
+    local cast, cast2 = getObjInCrosshairs(self, nil, false, nil)
 
-    if cast.hitObject and (cast.hitObject.type == types.NPC or cast.hitObject.type == types.Creature) then
-        return
-    end
     -- Fired arrows will go through solid items, so need to check if it would have hit an NPC,
     -- otherwise you can get it stuck in a bottle, but still hit someone.
-    if cast2.hitObject and (cast2.hitObject.type == types.NPC or cast2.hitObject.type == types.Creature) then
+    if not cast.hitPos
+        or (cast.hitObject and (cast.hitObject.type == types.NPC or cast.hitObject.type == types.Creature))
+        or (cast2.hitObject and (cast2.hitObject.type == types.NPC or cast2.hitObject.type == types.Creature))
+    then
         return
     end
 
     local newRot = createRotation(xRot, 0, zRot)
     local newPos = cast.hitPos
-    core.sendGlobalEvent("placeArrow", { rotation = newRot, id = arrowId, position = newPos, actor = self.object })
+    core.sendGlobalEvent("placeArrow", {
+        rotation = newRot,
+        id = arrowId,
+        position = newPos,
+        actor = self.object
+    })
 end
 
-local function castAsyncRenderingRay()
-    local sourcePos = camera.getPosition()
-    local pos, v = getCameraDirData(sourcePos)
-    local dist = 8500
-    nearby.asyncCastRenderingRay(
-        async:callback(placeNewArrow),
-        pos, pos + v * dist
-    )
-end
-
-local function attackMade(groupname, key)
+local function attackMade(groupName, key)
     if key == "shoot start" then
         -- gotta get them in advance
         -- otherwise last arrow won't stick
@@ -125,10 +117,22 @@ local function attackMade(groupname, key)
 
         if not arrow then return end
         arrowId = arrow.recordId
-        castAsyncRenderingRay()
+    end
+end
+
+local function onFrame()
+    if arrowId then
+        placeNewArrow()
+        arrowId = nil
     end
 end
 
 I.AnimationController.addTextKeyHandler("bowandarrow", attackMade)
 I.AnimationController.addTextKeyHandler("crossbow", attackMade)
 I.AnimationController.addTextKeyHandler("throwweapon", attackMade)
+
+return {
+    engineHandlers = {
+        onFrame = onFrame
+    }
+}
