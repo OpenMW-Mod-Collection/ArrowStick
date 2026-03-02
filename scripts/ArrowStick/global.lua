@@ -8,7 +8,7 @@ local core = require("openmw.core")
 local types = require("openmw.types")
 
 local settings = storage.globalSection("SettingsArrowStick")
-local shotArrows
+local shotArrows = {}
 local xrot
 local xpos
 
@@ -85,12 +85,12 @@ end
 
 local function onSave()
     return {
-        shotArrows = shotArrows or {}
+        shotArrows = shotArrows
     }
 end
 
 local function onLoad(saveData)
-    shotArrows = saveData.shotArrows
+    shotArrows = saveData.shotArrows or {}
 end
 
 local function onActivate(obj, actor)

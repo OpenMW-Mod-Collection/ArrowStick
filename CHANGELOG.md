@@ -1,5 +1,11 @@
 # Arrow Stick (OpenMW)
 
+## 1.2.1
+
+### Fixes
+
+- Fixed mod breaking on initialization
+
 ## 1.2
 
 ### Features
