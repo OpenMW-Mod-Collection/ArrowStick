@@ -1,5 +1,11 @@
 # Arrow Stick (OpenMW)
 
+## 1.2.2
+
+### Features
+
+- Added DB ebony darts to rotation blacklist
+
 ## 1.2.1
 
 ### Fixes

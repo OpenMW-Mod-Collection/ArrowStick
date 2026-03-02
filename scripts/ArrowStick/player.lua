@@ -7,6 +7,8 @@ local util = require('openmw.util')
 local I = require("openmw.interfaces")
 local storage = require("openmw.storage")
 
+local C = require("scripts.ArrowStick.utils.const")
+
 local settings = storage.globalSection("SettingsArrowStick")
 
 local rotOffset = 0
@@ -122,7 +124,7 @@ local function attackMade(groupName, key)
         if isBow or isCrossbow then
             rotOffset = 0
         elseif isThrown then
-            rotOffset = 180
+            rotOffset = C.ThrowablesRotationBlacklist[weapon] and 0 or 180
             arrow = weapon
         else
             return
