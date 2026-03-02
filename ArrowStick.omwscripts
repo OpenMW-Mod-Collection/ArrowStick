@@ -1,2 +1,6 @@
-GLOBAL:scripts/ArrowStick/ArrowStick_G.lua
-PLAYER:scripts/ArrowStick/ArrowStick_P.lua
+GLOBAL: scripts/ArrowStick/global.lua
+PLAYER: scripts/ArrowStick/player.lua
+CUSTOM: scripts/ArrowStick/customArrow.lua
+
+MENU: scripts/ArrowStick/settingsMenu.lua
+GLOBAL: scripts/ArrowStick/settingsGlobal.lua

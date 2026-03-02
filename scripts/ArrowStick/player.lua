@@ -5,13 +5,14 @@ local nearby = require('openmw.nearby')
 local camera = require('openmw.camera')
 local util = require('openmw.util')
 local I = require("openmw.interfaces")
-local async = require("openmw.async")
+local storage = require("openmw.storage")
+
+local settings = storage.globalSection("SettingsArrowStick")
 
 local rotOffset = 0
 local arrowId
-local equipment = types.Actor.getEquipment(self)
-local weapon = equipment[types.Actor.EQUIPMENT_SLOT.CarriedRight]
-local arrow = equipment[types.Actor.EQUIPMENT_SLOT.Ammunition]
+local weapon = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.CarriedRight)
+local arrow = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.Ammunition)
 
 local function anglesToV(pitch, yaw)
     local xzLen = math.cos(pitch)
@@ -67,6 +68,14 @@ local function createRotation(x, y, z)
     end
 end
 
+local function arrowSticked()
+    local stickChance = settings:get("stickChance")
+    if stickChance < 0 then
+        stickChance = core.getGMST("fProjectileThrownStoreChance") / 100
+    end
+    return math.random() < stickChance
+end
+
 local function placeNewArrow()
     local xRot = camera.getPitch() - math.rad(rotOffset)
     local zRot = getRotation(self.rotation).z -- math.rad(rotOffset2)
@@ -81,13 +90,18 @@ local function placeNewArrow()
         return
     end
 
+    if not arrowSticked() then return end
+
     local newRot = createRotation(xRot, 0, zRot)
     local newPos = cast.hitPos
     core.sendGlobalEvent("placeArrow", {
         rotation = newRot,
         id = arrowId,
         position = newPos,
-        actor = self.object
+        actor = self.object,
+        -- for Impact Effects
+        weapon = weapon,
+        hitObj = cast.hitObject,
     })
 end
 
@@ -95,9 +109,8 @@ local function attackMade(groupName, key)
     if key == "shoot start" then
         -- gotta get them in advance
         -- otherwise last arrow won't stick
-        equipment = types.Actor.getEquipment(self)
-        weapon    = equipment[types.Actor.EQUIPMENT_SLOT.CarriedRight]
-        arrow     = equipment[types.Actor.EQUIPMENT_SLOT.Ammunition]
+        weapon = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.CarriedRight)
+        arrow  = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.Ammunition)
     elseif key == "shoot release" then
         if not (weapon and weapon.type == types.Weapon) then return end
 

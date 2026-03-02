@@ -1,0 +1,15 @@
+page_name: Arrow Stick
+page_desc: Arrows, bolts and throwing weapons will now stick into the ground and objects.
+
+settings_groupName: Settings
+despawnArrows_name: Unloaded Arrows Despawn
+despawnArrows_desc: Does not retroactively affect arrows shot with this setting disabled.
+stickChance_name: Stick Chance
+stickChance_desc: >
+  Set it to -1 to instead use vanilla "fProjectileThrownStoreChance" GMST value (0.25 by default).
+  This GMST determines chance of projectiles to get stored in victim's inventory on hit.
+impactEffectsIntegration_name: Impact Effects Integration
+impactEffectsIntegration_desc: |
+  Impact Effects has to be higher in the load order than the Arrow Stick for this feature to work.
+
+  Assumes the projectile moves at max speed.

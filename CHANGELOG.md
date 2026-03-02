@@ -1,5 +1,14 @@
 # Arrow Stick (OpenMW)
 
+## 1.2
+
+### Features
+
+- Added settings page
+- Added chance for arrow not to stick
+- Added option for arrows to despawn on being unloaded
+- Added optional Impact Effects integration
+
 ## 1.1
 
 ### Fixes
