@@ -1,13 +1,12 @@
 local core = require("openmw.core")
 local self = require("openmw.self")
 local types = require('openmw.types')
-local nearby = require('openmw.nearby')
 local camera = require('openmw.camera')
-local util = require('openmw.util')
 local I = require("openmw.interfaces")
 local storage = require("openmw.storage")
 
-local C = require("scripts.ArrowStick.utils.const")
+local checks = require("scripts.ArrowStick.utils.checks")
+local camUtil = require("scripts.ArrowStick.utils.camera")
 
 local settings = storage.globalSection("SettingsArrowStick")
 
@@ -16,72 +15,11 @@ local arrowId
 local weapon = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.CarriedRight)
 local arrow = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.Ammunition)
 
-local function anglesToV(pitch, yaw)
-    local xzLen = math.cos(pitch)
-    return util.vector3(
-        xzLen * math.sin(yaw), -- x
-        xzLen * math.cos(yaw), -- y
-        math.sin(pitch)        -- z
-    )
-end
-
-local function getRotation(rot, angle)
-    local z, y, x = rot:getAnglesZYX()
-    return { x = x, y = y, z = z }
-end
-
-local function getCameraDirData(sourcePos)
-    local pos = sourcePos
-    local pitch, yaw
-
-    pitch = -(camera.getPitch() + camera.getExtraPitch())
-    yaw = (camera.getYaw() + camera.getExtraYaw())
-
-    return pos, anglesToV(pitch, yaw)
-end
-
-local function getObjInCrosshairs(ignoredObj, mdist, alwaysPost, sourcePos)
-    if not sourcePos then
-        sourcePos = camera.getPosition()
-    end
-    local pos, v = getCameraDirData(sourcePos)
-
-    local dist = 8500
-    if (mdist ~= nil) then dist = mdist end
-
-    local ret = nearby.castRenderingRay(pos, pos + v * dist, { ignore = ignoredObj })
-    local ret2 = nearby.castRay(pos, pos + v * dist, { ignore = ignoredObj })
-    local destPos = (pos + v * dist)
-
-    return ret, ret2, destPos
-end
-
-local function createRotation(x, y, z)
-    if (core.API_REVISION < 40) then
-        return util.vector3(x, y, z)
-    else
-        local rotate = util.transform.rotateZ(z)
-        local rotateX = util.transform.rotateX(x)
-        local rotateY = util.transform.rotateY(y)
-        ---@diagnostic disable-next-line: undefined-field
-        rotate = rotate:__mul(rotateY)
-        rotate = rotate:__mul(rotateX)
-        return rotate
-    end
-end
-
-local function arrowSticked()
-    local stickChance = settings:get("stickChance")
-    if stickChance < 0 then
-        stickChance = core.getGMST("fProjectileThrownStoreChance") / 100
-    end
-    return math.random() < stickChance
-end
-
 local function placeNewArrow()
+
     local xRot = camera.getPitch() - math.rad(rotOffset)
-    local zRot = getRotation(self.rotation).z -- math.rad(rotOffset2)
-    local cast, cast2 = getObjInCrosshairs(self, nil, false, nil)
+    local zRot = camUtil.getRotation(self.rotation).z -- math.rad(rotOffset2)
+    local cast, cast2 = camUtil.getObjInCrosshairs(self, nil, false, nil)
 
     -- Fired arrows will go through solid items, so need to check if it would have hit an NPC,
     -- otherwise you can get it stuck in a bottle, but still hit someone.
@@ -92,9 +30,11 @@ local function placeNewArrow()
         return
     end
 
-    if not arrowSticked() then return end
+    local hitWater = self.cell.waterLevel and cast.hitPos.z < self.cell.waterLevel
+    local waterCheck = settings:get("stickUnderwater") or not hitWater
+    if not waterCheck then return end
 
-    local newRot = createRotation(xRot, 0, zRot)
+    local newRot = camUtil.createRotation(xRot, 0, zRot)
     local newPos = cast.hitPos
     core.sendGlobalEvent("placeArrow", {
         rotation = newRot,
@@ -116,6 +56,10 @@ local function attackMade(groupName, key)
     elseif key == "shoot release" then
         if not (weapon and weapon.type == types.Weapon) then return end
 
+        local ehcnantCheck = settings:get("stickAOEEnchants") or not checks.arrowAOEEnchanted(weapon)
+        local rollCheck = checks.successfulRoll(settings)
+        if not (ehcnantCheck or rollCheck) then return end
+
         local weaponType = weapon.type.record(weapon).type
         local isBow      = weaponType == types.Weapon.TYPE.MarksmanBow
         local isCrossbow = weaponType == types.Weapon.TYPE.MarksmanCrossbow
@@ -124,7 +68,7 @@ local function attackMade(groupName, key)
         if isBow or isCrossbow then
             rotOffset = 0
         elseif isThrown then
-            rotOffset = C.ThrowablesRotationBlacklist[weapon] and 0 or 180
+            rotOffset = 180
             arrow = weapon
         else
             return

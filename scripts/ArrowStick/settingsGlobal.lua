@@ -25,6 +25,20 @@ I.Settings.registerGroup {
             max = 1,
         },
         {
+            key = 'stickAOEEnchants',
+            name = 'stickAOEEnchants_name',
+            description = "stickAOEEnchants_desc",
+            renderer = 'checkbox',
+            default = false,
+        },
+        {
+            key = 'stickUnderwater',
+            name = 'stickUnderwater_name',
+            description = "stickUnderwater_desc",
+            renderer = 'checkbox',
+            default = false,
+        },
+        {
             key = 'impactEffectsIntegration',
             name = 'impactEffectsIntegration_name',
             description = "impactEffectsIntegration_desc",

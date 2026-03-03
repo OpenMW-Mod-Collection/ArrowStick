@@ -1,10 +1,12 @@
 # Arrow Stick (OpenMW)
 
-## 1.2.2
+## 1.3
 
 ### Features
 
-- Added DB ebony darts to rotation blacklist
+- Added vanilla parity settings
+- Added option to enable sticking for projectiles with AOE enchantments
+- Added option to enable underwater sticking
 
 ## 1.2.1
 
