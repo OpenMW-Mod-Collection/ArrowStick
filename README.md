@@ -10,6 +10,8 @@ Works with any arrows, bolts, and thrown weapons.
 
 Has [Impact Effects](https://www.nexusmods.com/morrowind/mods/55508) integration. For it to work, Impact Effects has to loaded before Arrow Stick.
 
+Soft incompatibility with [Improved Thrown Weapon Projectiles](https://www.nexusmods.com/morrowind/mods/44763) - some thrown weapons might stick backwards.
+
 ## Credits
 
 **DaisyHasACat** - Original author, created the bulk of the project  
