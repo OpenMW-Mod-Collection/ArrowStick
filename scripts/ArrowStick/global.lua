@@ -35,7 +35,6 @@ local function placeArrow(data)
     local rot = data.rotation
     local player = data.actor
     local waterPos = data.waterPos
-    local waterHit = pos.z < waterPos.z
 
     if I.impactEffects then
         local mat = IE.getMaterial(data.hitObj, waterPos)
@@ -49,7 +48,8 @@ local function placeArrow(data)
         end
     end
 
-    if waterHit and not settings:get("stickUnderwater") then return end
+    local hitWater = player.cell.waterLevel and pos.z < player.cell.waterLevel
+    if hitWater and not settings:get("stickUnderwater") then return end
 
     local temppos = util.vector3(pos.x, pos.y, pos.z - 1000)
     local newArrow = world.createObject(id)
