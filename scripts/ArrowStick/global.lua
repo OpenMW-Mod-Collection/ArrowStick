@@ -35,12 +35,14 @@ local function placeArrow(data)
     local rot = data.rotation
     local player = data.actor
     local waterPos = data.waterPos
+    local hitWater = player.cell.waterLevel and pos.z < player.cell.waterLevel
 
     if I.impactEffects then
-        local mat = IE.getMaterial(data.hitObj, waterPos)
+        local mat = IE.getMaterial(data.hitObj, hitWater)
 
         if settingsImpactEffects:get("impactEffects") then
-            IE.addImpactEffects(data.weapon, waterPos or pos, mat, player.position)
+            local vfxPos = hitWater and waterPos or pos
+            IE.addImpactEffects(data.weapon, vfxPos, mat, player.position)
         end
 
         if settingsImpactEffects:get("checkMaterial") then
@@ -48,7 +50,6 @@ local function placeArrow(data)
         end
     end
 
-    local hitWater = player.cell.waterLevel and pos.z < player.cell.waterLevel
     if hitWater and not settings:get("stickUnderwater") then return end
 
     local temppos = util.vector3(pos.x, pos.y, pos.z - 1000)

@@ -1,5 +1,9 @@
 # Arrow Stick (OpenMW)
 
+## 1.4.2
+
+- Fixed water detection for the second time
+
 ## 1.4.1
 
 - Fixed arrows crashing the mod if not shot at water (uh oh)
