@@ -13,8 +13,15 @@ stickAOEEnchants_desc: >
   In vanilla, projectiles with AOE enchantments are never stored in the victim's inventory on hit.
 stickUnderwater_name: Stick Arrows Underwater
 stickUnderwater_desc: In vanilla, projectiles cease to exist once they touch water.
-impactEffectsIntegration_name: Impact Effects Integration
-impactEffectsIntegration_desc: |
-  Impact Effects must be higher in the load order than Arrow Stick for this feature to work.
 
-  Assumes the projectile is moving at maximum speed.
+impactEffects_groupName: Impact Effects Integration
+impactEffects_groupDesc: These features in order to work require Impact Effects to be installed.
+impactEffects_name: Enable Impact Effects
+impactEffects_desc: Create VFX on impact or not. Assumes the projectile is moving at maximum speed.
+checkMaterial_name: Check Hit Object Material
+checkMaterial_desc: |
+  Makes arrows not stick into certain materials.
+
+  Blacklisted materials:
+  - Stone
+  - Metal

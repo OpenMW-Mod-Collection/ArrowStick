@@ -15,12 +15,12 @@ checks.arrowAOEEnchanted = function(weapon)
     return false
 end
 
-checks.successfulRoll = function(settings)
+checks.randomRoll = function(settings)
     local stickChance = settings:get("stickChance")
     if stickChance < 0 then
         stickChance = core.getGMST("fProjectileThrownStoreChance") / 100
     end
-    return math.random() < stickChance
+    return math.random() > stickChance
 end
 
 return checks

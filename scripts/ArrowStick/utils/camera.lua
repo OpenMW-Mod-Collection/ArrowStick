@@ -37,11 +37,12 @@ camUtil.getObjInCrosshairs = function(ignoredObj, mdist, alwaysPost, sourcePos)
     local dist = 8500
     if (mdist ~= nil) then dist = mdist end
 
-    local ret = nearby.castRenderingRay(pos, pos + v * dist, { ignore = ignoredObj })
-    local ret2 = nearby.castRay(pos, pos + v * dist, { ignore = ignoredObj })
     local destPos = (pos + v * dist)
+    local ret = nearby.castRenderingRay(pos, destPos, { ignore = ignoredObj })
+    local ret2 = nearby.castRay(pos, destPos, { ignore = ignoredObj })
+    local ret3 = nearby.castRay(pos, destPos, { collisionType = nearby.COLLISION_TYPE.Water })
 
-    return ret, ret2, destPos
+    return ret, ret2, ret3, destPos
 end
 
 camUtil.createRotation = function(x, y, z)

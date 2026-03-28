@@ -1,8 +1,14 @@
 # Arrow Stick (OpenMW)
 
-## 1.3
+## 1.4
 
-### Features
+- Moved Impact Effects Integration settings into their own settings group
+- Added water splashes (Impact Effects integration)
+- Added a non-sticking material list (Impact Effects integration)
+- Added script removing to despawning arrows. It may or may not positively impact your performance
+- Fixed random and AOE enchant cheks not working correctly
+
+## 1.3
 
 - Added vanilla parity settings
 - Added option to enable sticking for projectiles with AOE enchantments
@@ -10,13 +16,9 @@
 
 ## 1.2.1
 
-### Fixes
-
 - Fixed mod breaking on initialization
 
 ## 1.2
-
-### Features
 
 - Added settings page
 - Added chance for arrow not to stick
@@ -24,8 +26,6 @@
 - Added optional Impact Effects integration
 
 ## 1.1
-
-### Fixes
 
 - Arrows no longer spawn inside the player
 

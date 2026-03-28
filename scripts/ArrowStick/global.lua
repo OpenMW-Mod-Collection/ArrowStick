@@ -3,45 +3,17 @@ local _, async = pcall(require, "openmw.async")
 local util = require("openmw.util")
 local storage = require("openmw.storage")
 local I = require("openmw.interfaces")
-local time = require("openmw_aux.time")
-local core = require("openmw.core")
-local types = require("openmw.types")
+
+local IE = require("scripts.ArrowStick.utils.impactEffects")
+local consts = require("scripts.ArrowStick.utils.consts")
 
 local settings = storage.globalSection("SettingsArrowStick")
+local settingsImpactEffects = storage.globalSection("SettingsArrowStick_impactEffects")
+local arrowDespawnScript = "scripts/ArrowStick/customArrow.lua"
+
 local shotArrows = {}
 local xrot
 local xpos
-
-local delayedImpactEffect = time.registerTimerCallback("ArrowStick_ImpactEffect",
-    function(params)
-        I.impactEffects.spawnEffect({
-            material = params.hitObj
-                and I.impactEffects.getMaterialByObject(params.hitObj)
-                or "Dirt",
-            hitPos = params.hitPos
-        })
-    end
-)
-
-local function addImpactEffects(weapon, hitPos, hitObj, playerPos)
-    local weaponType = weapon.type.record(weapon).type
-    local isThrown   = weaponType == types.Weapon.TYPE.MarksmanThrown
-    local projectileSpeed
-    if isThrown then
-        projectileSpeed = core.getGMST("fThrownWeaponMaxSpeed")
-    else
-        projectileSpeed = core.getGMST("fProjectileMaxSpeed")
-    end
-
-    local delta = playerPos - hitPos
-    local distance = delta:length()
-
-    time.newSimulationTimer(
-        distance / projectileSpeed,
-        delayedImpactEffect,
-        { hitObj = hitObj, hitPos = hitPos }
-    )
-end
 
 local function rotateArrow(data)
     local obj = data.obj
@@ -58,29 +30,38 @@ local function onItemActive(item)
 end
 
 local function placeArrow(data)
-    async:newUnsavableSimulationTimer(0.1, function()
-        local id = data.id
-        local pos = data.position
-        local rot = data.rotation
-        local player = data.actor
-        -- print(id, pos, rot)
+    local id = data.id
+    local pos = data.position
+    local rot = data.rotation
+    local player = data.actor
+    local waterPos = data.waterPos
+    local waterHit = pos.z < waterPos.z
 
-        local temppos = util.vector3(pos.x, pos.y, pos.z - 1000)
-        local newArrow = world.createObject(id)
-        newArrow:teleport(player.cell.name, temppos, rot)
+    if I.impactEffects then
+        local mat = IE.getMaterial(data.hitObj, waterPos)
 
-        xrot = rot
-        xpos = util.vector3(pos.x, pos.y, pos.z)
-
-        if settings:get("despawnArrows") then
-            newArrow:addScript("scripts/ArrowStick/customArrow.lua")
-            shotArrows[newArrow.id] = newArrow
+        if settingsImpactEffects:get("impactEffects") then
+            IE.addImpactEffects(data.weapon, waterPos or pos, mat, player.position)
         end
 
-        if I.impactEffects and settings:get("impactEffectsIntegration") then
-            addImpactEffects(data.weapon, pos, data.hitObj, player.position)
+        if settingsImpactEffects:get("checkMaterial") then
+            if consts.unstickableMaterials[mat] then return end
         end
-    end)
+    end
+
+    if waterHit and not settings:get("stickUnderwater") then return end
+
+    local temppos = util.vector3(pos.x, pos.y, pos.z - 1000)
+    local newArrow = world.createObject(id)
+    newArrow:teleport(player.cell.name, temppos, rot)
+
+    xrot = rot
+    xpos = util.vector3(pos.x, pos.y, pos.z)
+
+    if settings:get("despawnArrows") then
+        newArrow:addScript(arrowDespawnScript)
+        shotArrows[newArrow.id] = newArrow
+    end
 end
 
 local function onSave()
@@ -104,6 +85,7 @@ local function arrowInactive(id)
     shotArrows[id] = nil
     if not arrow or not arrow:isValid() then return end
     arrow:remove()
+    arrow:removeScript(arrowDespawnScript)
 end
 
 return {

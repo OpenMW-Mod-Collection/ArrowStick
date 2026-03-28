@@ -38,20 +38,31 @@ I.Settings.registerGroup {
             renderer = 'checkbox',
             default = false,
         },
-        {
-            key = 'impactEffectsIntegration',
-            name = 'impactEffectsIntegration_name',
-            description = "impactEffectsIntegration_desc",
-            renderer = 'checkbox',
-            default = true,
-        },
     }
 }
 
-if not I.impactEffects then
-    I.Settings.updateRendererArgument(
-        "SettingsArrowStick",
-        "impactEffectsIntegration",
-        { disabled = true }
-    )
-end
+I.Settings.registerGroup {
+    key = 'SettingsArrowStick_impactEffects',
+    page = 'ArrowStick',
+    l10n = 'ArrowStick',
+    name = 'impactEffects_groupName',
+    description = "impactEffects_groupDesc",
+    permanentStorage = true,
+    order = 100,
+    settings = {
+        {
+            key = 'impactEffects',
+            name = 'impactEffects_name',
+            description = "impactEffects_desc",
+            renderer = 'checkbox',
+            default = true,
+        },
+        {
+            key = 'checkMaterial',
+            name = 'checkMaterial_name',
+            description = "checkMaterial_desc",
+            renderer = 'checkbox',
+            default = false,
+        },
+    }
+}

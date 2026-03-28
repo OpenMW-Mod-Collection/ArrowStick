@@ -16,10 +16,9 @@ local weapon = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.Carried
 local arrow = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.Ammunition)
 
 local function placeNewArrow()
-
     local xRot = camera.getPitch() - math.rad(rotOffset)
     local zRot = camUtil.getRotation(self.rotation).z -- math.rad(rotOffset2)
-    local cast, cast2 = camUtil.getObjInCrosshairs(self, nil, false, nil)
+    local cast, cast2, cast3 = camUtil.getObjInCrosshairs(self, nil, false, nil)
 
     -- Fired arrows will go through solid items, so need to check if it would have hit an NPC,
     -- otherwise you can get it stuck in a bottle, but still hit someone.
@@ -30,10 +29,6 @@ local function placeNewArrow()
         return
     end
 
-    local hitWater = self.cell.waterLevel and cast.hitPos.z < self.cell.waterLevel
-    local waterCheck = settings:get("stickUnderwater") or not hitWater
-    if not waterCheck then return end
-
     local newRot = camUtil.createRotation(xRot, 0, zRot)
     local newPos = cast.hitPos
     core.sendGlobalEvent("placeArrow", {
@@ -41,6 +36,7 @@ local function placeNewArrow()
         id = arrowId,
         position = newPos,
         actor = self.object,
+        waterPos = cast3.hitPos,
         -- for Impact Effects
         weapon = weapon,
         hitObj = cast.hitObject,
@@ -56,9 +52,11 @@ local function attackMade(groupName, key)
     elseif key == "shoot release" then
         if not (weapon and weapon.type == types.Weapon) then return end
 
-        local ehcnantCheck = settings:get("stickAOEEnchants") or not checks.arrowAOEEnchanted(weapon)
-        local rollCheck = checks.successfulRoll(settings)
-        if not (ehcnantCheck or rollCheck) then return end
+        --local ehcnantCheck = settings:get("stickAOEEnchants") or not checks.arrowAOEEnchanted(weapon)
+        local ehcnantCheck = not settings:get("stickAOEEnchants") and checks.arrowAOEEnchanted(weapon)
+        local rollCheck = checks.randomRoll(settings)
+        --if not (ehcnantCheck or rollCheck) then return end
+        if rollCheck or ehcnantCheck then return end
 
         local weaponType = weapon.type.record(weapon).type
         local isBow      = weaponType == types.Weapon.TYPE.MarksmanBow
