@@ -1,5 +1,7 @@
 local core = require("openmw.core")
 
+local fProjectileThrownStoreChance = core.getGMST("fProjectileThrownStoreChance")
+
 local checks = {}
 
 checks.arrowAOEEnchanted = function(weapon)
@@ -15,10 +17,11 @@ checks.arrowAOEEnchanted = function(weapon)
     return false
 end
 
-checks.randomRoll = function(settings)
-    local stickChance = settings:get("stickChance")
-    if stickChance < 0 then
-        stickChance = core.getGMST("fProjectileThrownStoreChance") / 100
+checks.randomRoll = function(stickChance)
+    if stickChance == 0 then
+        return true
+    elseif stickChance < 0 then
+        stickChance = fProjectileThrownStoreChance / 100
     end
     return math.random() > stickChance
 end

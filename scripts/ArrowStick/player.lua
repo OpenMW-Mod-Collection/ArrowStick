@@ -4,16 +4,26 @@ local types = require('openmw.types')
 local camera = require('openmw.camera')
 local I = require("openmw.interfaces")
 local storage = require("openmw.storage")
+local time = require("openmw_aux.time")
 
 local checks = require("scripts.ArrowStick.utils.checks")
 local camUtil = require("scripts.ArrowStick.utils.camera")
 
 local settings = storage.globalSection("SettingsArrowStick")
+local fThrownWeaponMaxSpeed = core.getGMST("fThrownWeaponMaxSpeed")
+local fProjectileMaxSpeed = core.getGMST("fProjectileMaxSpeed")
 
 local rotOffset = 0
 local arrowId
 local weapon = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.CarriedRight)
 local arrow = types.Actor.getEquipment(self, types.Actor.EQUIPMENT_SLOT.Ammunition)
+
+local delayedPlaceNewArrow = time.registerTimerCallback(
+    "ArrowStick_PlaceNewArrow",
+    function(params)
+        core.sendGlobalEvent("ArrowStick_PlaceNewArrow", params)
+    end
+)
 
 local function placeNewArrow()
     local xRot = camera.getPitch() - math.rad(rotOffset)
@@ -29,18 +39,31 @@ local function placeNewArrow()
         return
     end
 
-    local newRot = camUtil.createRotation(xRot, 0, zRot)
-    local newPos = cast.hitPos
-    core.sendGlobalEvent("placeArrow", {
-        rotation = newRot,
+    local arrowPos = cast.hitPos
+    local eventParams = {
+        rotation = camUtil.createRotation(xRot, 0, zRot),
         id = arrowId,
-        position = newPos,
+        position = arrowPos,
         actor = self.object,
         waterPos = cast3.hitPos,
         -- for Impact Effects
         weapon = weapon,
         hitObj = cast.hitObject,
-    })
+    }
+
+    local weaponType = weapon.type.record(weapon).type
+    local isThrown = weaponType == types.Weapon.TYPE.MarksmanThrown
+    local projectileSpeed = isThrown
+        and fThrownWeaponMaxSpeed
+        or fProjectileMaxSpeed
+    local distanceDelta = self.position - arrowPos
+    local distance = distanceDelta:length()
+
+    time.newSimulationTimer(
+        distance / projectileSpeed,
+        delayedPlaceNewArrow,
+        eventParams
+    )
 end
 
 local function attackMade(groupName, key)
@@ -52,10 +75,8 @@ local function attackMade(groupName, key)
     elseif key == "shoot release" then
         if not (weapon and weapon.type == types.Weapon) then return end
 
-        --local ehcnantCheck = settings:get("stickAOEEnchants") or not checks.arrowAOEEnchanted(weapon)
         local ehcnantCheck = not settings:get("stickAOEEnchants") and checks.arrowAOEEnchanted(weapon)
-        local rollCheck = checks.randomRoll(settings)
-        --if not (ehcnantCheck or rollCheck) then return end
+        local rollCheck = checks.randomRoll(settings:get("stickChance"))
         if rollCheck or ehcnantCheck then return end
 
         local weaponType = weapon.type.record(weapon).type

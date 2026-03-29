@@ -2,7 +2,7 @@ local core = require("openmw.core")
 local self = require("openmw.self")
 
 local function onInactive()
-    core.sendGlobalEvent("arrowInactive", self.id)
+    core.sendGlobalEvent("ArrowStick_ArrowInactive", self.id)
 end
 
 return {

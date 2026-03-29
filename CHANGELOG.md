@@ -1,5 +1,12 @@
 # Arrow Stick (OpenMW)
 
+## 1.5
+
+- Changed distance delay to affect not just impact effects, but arrow spawning too
+- Added new event on successful arrow stick
+- Renamed event for an attempt to place an arrow ("placeArrow" -> "ArrowStick_PlaceNewArrow")
+- Removed some legacy code
+
 ## 1.4.2
 
 - Fixed water detection for the second time
