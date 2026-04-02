@@ -2,8 +2,6 @@
 
 ## 1.6
 
-!! Now requires ArrowStick.omwaddon to work !!
-
 - Added Impact Effects SFX
   - Requires Impact Effects 1.08 or newer to work
   - Older versions of Impact Effects still work, but they don't make SFX

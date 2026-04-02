@@ -9,7 +9,6 @@ local consts = require("scripts.ArrowStick.utils.consts")
 local settings = storage.globalSection("SettingsArrowStick")
 local settingsImpactEffects = storage.globalSection("SettingsArrowStick_impactEffects")
 local arrowDespawnScript = "scripts/ArrowStick/customArrow.lua"
-local tmpObjId = "arrowstick_missed_arrow"
 
 local shotArrows = {}
 
@@ -38,8 +37,11 @@ local function placeNewArrow(data)
         and consts.unstickableMaterials[material]
     local arrowSticked = not (waterCheck or materialCheck)
 
-    local newArrow = world.createObject(arrowSticked and id or tmpObjId)
+    local newArrow = world.createObject(id)
     newArrow:teleport(player.cell.name, pos, rot)
+    if not arrowSticked then
+        newArrow:setScale(0)
+    end
 
     if arrowSticked and settings:get("despawnArrows") then
         newArrow:addScript(arrowDespawnScript)
