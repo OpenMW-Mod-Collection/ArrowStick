@@ -28,7 +28,7 @@ local delayedPlaceNewArrow = time.registerTimerCallback(
 local function placeNewArrow()
     local xRot = camera.getPitch() - math.rad(rotOffset)
     local zRot = camUtil.getRotation(self.rotation).z -- math.rad(rotOffset2)
-    local cast, cast2, cast3 = camUtil.getObjInCrosshairs(self, nil, false, nil)
+    local cast, cast2, cast3 = camUtil.getObjInCrosshairs(self, nil, false, nil, settings:get("enableScatter"))
 
     -- Fired arrows will go through solid items, so need to check if it would have hit an NPC,
     -- otherwise you can get it stuck in a bottle, but still hit someone.

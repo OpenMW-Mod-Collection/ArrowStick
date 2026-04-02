@@ -38,6 +38,13 @@ I.Settings.registerGroup {
             renderer = 'checkbox',
             default = false,
         },
+        {
+            key = 'enableScatter',
+            name = 'enableScatter_name',
+            description = "enableScatter_desc",
+            renderer = 'checkbox',
+            default = true,
+        },
     }
 }
 

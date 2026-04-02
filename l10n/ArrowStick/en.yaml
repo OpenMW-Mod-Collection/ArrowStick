@@ -13,9 +13,12 @@ stickAOEEnchants_desc: >
   In vanilla, projectiles with AOE enchantments are never stored in the victim's inventory on hit.
 stickUnderwater_name: Stick Arrows Underwater
 stickUnderwater_desc: In vanilla, projectiles cease to exist once they touch water.
+enableScatter_name: Enable Scatter
+enableScatter_desc: >
+  Adds a small random deviation to the arrow's path, making them less likely to stick into each other.
 
 impactEffects_groupName: Impact Effects Integration
-impactEffects_groupDesc: These features in order to work require Impact Effects to be installed.
+impactEffects_groupDesc: These features require Impact Effects to be installed.
 impactEffects_name: Enable Impact Effects
 impactEffects_desc: Create VFX on impact or not. Assumes the projectile is moving at maximum speed.
 checkMaterial_name: Check Hit Object Material

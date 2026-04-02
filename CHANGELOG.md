@@ -1,5 +1,15 @@
 # Arrow Stick (OpenMW)
 
+## 1.6
+
+!! Now requires ArrowStick.omwaddon to work !!
+
+- Added Impact Effects SFX
+  - Requires Impact Effects 1.08 or newer to work
+  - Older versions of Impact Effects still work, but they don't make SFX
+- Added arow scatter setting
+- Changed "ArrowStick_ArrowPlaced" event behavior and data
+
 ## 1.5
 
 - Changed distance delay to affect not just impact effects, but arrow spawning too

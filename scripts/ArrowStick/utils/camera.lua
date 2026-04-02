@@ -18,21 +18,26 @@ camUtil.getRotation = function(rot, angle)
     return { x = x, y = y, z = z }
 end
 
-camUtil.getCameraDirData = function(sourcePos)
+camUtil.getCameraDirData = function(sourcePos, scatter)
     local pos = sourcePos
     local pitch, yaw
 
     pitch = -(camera.getPitch() + camera.getExtraPitch())
     yaw = (camera.getYaw() + camera.getExtraYaw())
 
+    if scatter then
+        pitch = pitch + math.random(-15, 15) / 1000
+        yaw = yaw + math.random(-15, 15) / 1000
+    end
+
     return pos, camUtil.anglesToV(pitch, yaw)
 end
 
-camUtil.getObjInCrosshairs = function(ignoredObj, mdist, alwaysPost, sourcePos)
+camUtil.getObjInCrosshairs = function(ignoredObj, mdist, alwaysPost, sourcePos, scatter)
     if not sourcePos then
         sourcePos = camera.getPosition()
     end
-    local pos, v = camUtil.getCameraDirData(sourcePos)
+    local pos, v = camUtil.getCameraDirData(sourcePos, scatter)
 
     local dist = 8500
     if (mdist ~= nil) then dist = mdist end

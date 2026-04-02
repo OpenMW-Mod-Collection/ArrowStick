@@ -9,6 +9,7 @@ local consts = require("scripts.ArrowStick.utils.consts")
 local settings = storage.globalSection("SettingsArrowStick")
 local settingsImpactEffects = storage.globalSection("SettingsArrowStick_impactEffects")
 local arrowDespawnScript = "scripts/ArrowStick/customArrow.lua"
+local tmpObjId = "arrowstick_missed_arrow"
 
 local shotArrows = {}
 
@@ -20,37 +21,51 @@ local function placeNewArrow(data)
     local waterPos = data.waterPos
     local hitWater = player.cell.waterLevel and pos.z < player.cell.waterLevel
 
+    local material
     if I.impactEffects then
-        local mat = IE.getMaterial(data.hitObj, hitWater)
-
+        material = IE.getMaterial(data.hitObj, hitWater)
         if settingsImpactEffects:get("impactEffects") then
             I.impactEffects.spawnEffect({
-                material = mat,
+                material = material,
                 hitPos = hitWater and waterPos or pos,
             })
         end
-
-        if settingsImpactEffects:get("checkMaterial")
-            and consts.unstickableMaterials[mat]
-        then
-            return
-        end
     end
 
-    if hitWater and not settings:get("stickUnderwater") then return end
+    local waterCheck = hitWater and not settings:get("stickUnderwater")
+    local materialCheck = material
+        and settingsImpactEffects:get("checkMaterial")
+        and consts.unstickableMaterials[material]
+    local arrowSticked = not (waterCheck or materialCheck)
 
-    local newArrow = world.createObject(id)
+    local newArrow = world.createObject(arrowSticked and id or tmpObjId)
     newArrow:teleport(player.cell.name, pos, rot)
 
-    if settings:get("despawnArrows") then
+    if arrowSticked and settings:get("despawnArrows") then
         newArrow:addScript(arrowDespawnScript)
         shotArrows[newArrow.id] = newArrow
     end
 
     core.sendGlobalEvent("ArrowStick_ArrowPlaced", {
+        ---@diagnostic disable-next-line: assign-type-mismatch
+        arrowSticked = arrowSticked,
         item = newArrow,
-        position = pos,
+        -- for Impact Effects
+        material = material,
     })
+end
+
+local function arrowPlaced(eventData)
+    if I.impactEffects and I.impactEffects.version >= 108 then
+        I.impactEffects.playSfx({
+            material = eventData.material,
+            soundTarget = eventData.item,
+        })
+    end
+
+    if not eventData.arrowSticked then
+        eventData.item:remove()
+    end
 end
 
 local function onSave()
@@ -86,5 +101,6 @@ return {
     eventHandlers = {
         ArrowStick_PlaceNewArrow = placeNewArrow,
         ArrowStick_ArrowInactive = arrowInactive,
+        ArrowStick_ArrowPlaced = arrowPlaced,
     }
 }
