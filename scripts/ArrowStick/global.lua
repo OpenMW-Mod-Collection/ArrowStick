@@ -58,8 +58,8 @@ local function placeNewArrow(data)
 end
 
 local function arrowPlaced(eventData)
-    if I.impactEffects and I.impactEffects.version >= 108 then
-        I.impactEffects.playSfx({
+    if I.impactEffects and I.impactEffects.playSoundEffect then
+        I.impactEffects.playSoundEffect({
             material = eventData.material,
             soundTarget = eventData.item,
         })
