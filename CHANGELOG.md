@@ -5,7 +5,7 @@
 - Added Impact Effects SFX
   - Requires Impact Effects 1.08 or newer to work
   - Older versions of Impact Effects still work, but they don't make SFX
-- Added arow scatter setting
+- Added arrow scatter setting
 - Changed "ArrowStick_ArrowPlaced" event behavior and data
 
 ## 1.5
