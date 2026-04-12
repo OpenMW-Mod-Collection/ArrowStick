@@ -16,3 +16,4 @@ Soft incompatibility with [Improved Thrown Weapon Projectiles](https://www.nexus
 
 **DaisyHasACat** - Original author, created the bulk of the project  
 **Sosnoviy Bor** - Bug fixes, new features
+**Oreman** - Chinese translation

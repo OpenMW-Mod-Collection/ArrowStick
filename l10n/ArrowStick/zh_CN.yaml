@@ -1,0 +1,30 @@
+page_name: 箭矢附着
+page_desc: 箭矢、弩矢和投掷武器现在会钉入地面和物体中。
+
+settings_groupName: 设置
+despawnArrows_name: 未加载区域中的箭矢消失
+despawnArrows_desc: 不会追溯影响在禁用此设置时射出的箭矢。
+stickChance_name: 附着几率
+stickChance_desc: >
+  设为 -1 以使用原版 "fProjectileThrownStoreChance" GMST 值（默认为 0.25）。
+  该 GMST 决定了投射物击中时存入受害者库存的几率。
+stickAOEEnchants_name: 附着带有范围效果附魔的箭矢
+stickAOEEnchants_desc: >
+  在原版中，带有范围效果附魔的投射物击中时永远不会存入受害者的物品栏。
+stickUnderwater_name: 水下附着箭矢
+stickUnderwater_desc: 在原版中，投射物接触水后就会消失。
+enableScatter_name: 启用散射
+enableScatter_desc: >
+  为箭矢轨迹添加一个小的随机偏移，使它们不太容易相互钉在一起。
+
+impactEffects_groupName: 冲击效果集成
+impactEffects_groupDesc: 这些功能需要安装击打效果 Impact Effects 模组。
+impactEffects_name: 启用击打效果
+impactEffects_desc: 是否在撞击时创建视觉特效。假定投射物以最大速度运动。
+checkMaterial_name: 检查击中物体材质
+checkMaterial_desc: |
+  使箭矢不会钉入特定材质中。
+
+  黑名单材质：
+  - 石头
+  - 金属

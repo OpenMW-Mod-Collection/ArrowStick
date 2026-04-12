@@ -1,5 +1,9 @@
 # Arrow Stick (OpenMW)
 
+## 1.6.1
+
+- Added Chinese translation by oreman
+
 ## 1.6
 
 - Added Impact Effects SFX
