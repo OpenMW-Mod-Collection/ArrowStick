@@ -6,12 +6,12 @@ local I = require("openmw.interfaces")
 local storage = require("openmw.storage")
 local time = require("openmw_aux.time")
 
-local checks = require("scripts.ArrowStick.utils.checks")
 local camUtil = require("scripts.ArrowStick.utils.camera")
 
 local settings = storage.globalSection("SettingsArrowStick")
 local fThrownWeaponMaxSpeed = core.getGMST("fThrownWeaponMaxSpeed")
 local fProjectileMaxSpeed = core.getGMST("fProjectileMaxSpeed")
+local fProjectileThrownStoreChance = core.getGMST("fProjectileThrownStoreChance")
 
 local rotOffset = 0
 local arrowId
@@ -75,10 +75,6 @@ local function attackMade(groupName, key)
     elseif key == "shoot release" then
         if not (weapon and weapon.type == types.Weapon) then return end
 
-        local ehcnantCheck = not settings:get("stickAOEEnchants") and checks.arrowAOEEnchanted(weapon)
-        local rollCheck = checks.randomRoll(settings:get("stickChance"))
-        if rollCheck or ehcnantCheck then return end
-
         local weaponType = weapon.type.record(weapon).type
         local isBow      = weaponType == types.Weapon.TYPE.MarksmanBow
         local isCrossbow = weaponType == types.Weapon.TYPE.MarksmanCrossbow
@@ -92,6 +88,15 @@ local function attackMade(groupName, key)
         else
             return
         end
+
+        local enchantedDisappeared = not settings:get("stickEnchanted")
+            and arrow
+            and arrow.type.records[arrow.recordId].enchant
+        local stickChance = settings:get("stickChance") >= 0
+            and settings:get("stickChance")
+            or fProjectileThrownStoreChance
+        local didntStick = math.random() > stickChance / 100
+        if didntStick or enchantedDisappeared then return end
 
         if not arrow then return end
         arrowId = arrow.recordId

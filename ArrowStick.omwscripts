@@ -1,6 +1,8 @@
-GLOBAL: scripts/ArrowStick/global.lua
-PLAYER: scripts/ArrowStick/player.lua
-CUSTOM: scripts/ArrowStick/customArrow.lua
+MENU: scripts/ArrowStick/utils/SuperSlider6.lua
 
 MENU: scripts/ArrowStick/settingsMenu.lua
 GLOBAL: scripts/ArrowStick/settingsGlobal.lua
+
+GLOBAL: scripts/ArrowStick/global.lua
+PLAYER: scripts/ArrowStick/player.lua
+CUSTOM: scripts/ArrowStick/customArrow.lua

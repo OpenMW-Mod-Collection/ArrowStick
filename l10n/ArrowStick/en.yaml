@@ -6,11 +6,11 @@ despawnArrows_name: Unloaded Arrows Despawn
 despawnArrows_desc: Does not retroactively affect arrows shot while this setting was disabled.
 stickChance_name: Stick Chance
 stickChance_desc: >
-  Set to -1 to use the vanilla "fProjectileThrownStoreChance" GMST value (0.25 by default).
+  Set to -1 to use the vanilla "fProjectileThrownStoreChance" GMST value (25% by default).
   This GMST determines the chance for projectiles to be stored in the victim's inventory on hit.
-stickAOEEnchants_name: Stick Arrows With AOE Enchantments
-stickAOEEnchants_desc: >
-  In vanilla, projectiles with AOE enchantments are never stored in the victim's inventory on hit.
+stickEnchanted_name: Stick Enchanted Arrows
+stickEnchanted_desc: >
+  In vanilla, enchanted projectiles are never stored in the victim's inventory on hit.
 stickUnderwater_name: Stick Arrows Underwater
 stickUnderwater_desc: In vanilla, projectiles cease to exist once they touch water.
 enableScatter_name: Enable Scatter

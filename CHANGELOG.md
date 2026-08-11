@@ -1,5 +1,11 @@
 # Arrow Stick (OpenMW)
 
+## 1.6.2
+
+- Fixed enchantment check
+- Changed AOE enchantment check to any enchantment check
+- Changed stick chance settings renderer
+
 ## 1.6.1
 
 - Added Chinese translation by oreman
