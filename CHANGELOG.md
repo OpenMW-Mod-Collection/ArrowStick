@@ -1,5 +1,9 @@
 # Arrow Stick (OpenMW)
 
+## 1.6.3
+
+- Changed Stick Chance setting description
+
 ## 1.6.2
 
 - Fixed enchantment check

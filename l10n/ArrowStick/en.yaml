@@ -5,9 +5,10 @@ settings_groupName: Settings
 despawnArrows_name: Unloaded Arrows Despawn
 despawnArrows_desc: Does not retroactively affect arrows shot while this setting was disabled.
 stickChance_name: Stick Chance
-stickChance_desc: >
-  Set to -1 to use the vanilla "fProjectileThrownStoreChance" GMST value (25% by default).
-  This GMST determines the chance for projectiles to be stored in the victim's inventory on hit.
+stickChance_desc: |
+  Percentage chance for the arrow to stick in a surface.
+  
+  Set to -1 to match vanilla store chance mechanic.
 stickEnchanted_name: Stick Enchanted Arrows
 stickEnchanted_desc: >
   In vanilla, enchanted projectiles are never stored in the victim's inventory on hit.
